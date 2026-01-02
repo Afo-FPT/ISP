@@ -36,37 +36,37 @@ sims-ai/
 
 ### Prerequisites
 - Node.js >= 18.0.0
-- pnpm >= 8.0.0
+- npm (or pnpm >= 8.0.0)
 - PostgreSQL (for backend)
 
 ### Installation
 
 ```bash
 # Install dependencies
-pnpm install
+npm install
 
 # Setup backend
 cd apps/backend
 cp .env.example .env
 # Edit .env with your database credentials
-pnpm prisma:generate
-pnpm prisma:migrate
+npm run prisma:generate
+npm run prisma:migrate
 
 # Run development servers
-pnpm dev
+npm run dev
 ```
 
 ### Development
 
 ```bash
 # Run frontend only
-pnpm dev:frontend
+npm run dev:frontend
 
 # Run backend only
-pnpm dev:backend
+npm run dev:backend
 
 # Run both
-pnpm dev
+npm run dev
 ```
 
 ## Architecture Rules
