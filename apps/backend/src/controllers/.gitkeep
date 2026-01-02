@@ -1,0 +1,4 @@
+# Controllers
+# Handle HTTP requests and responses only
+# No business logic here - delegate to services
+

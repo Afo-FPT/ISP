@@ -1,0 +1,5 @@
+# Repositories
+# Only layer that accesses the database
+# Uses Prisma client for database operations
+# Returns domain models
+

@@ -1,0 +1,4 @@
+# DTOs (Data Transfer Objects)
+# Used for API request/response
+# Imported from packages/api-contract
+
