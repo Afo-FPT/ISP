@@ -7,7 +7,8 @@ import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
 import { StatusBadge } from '../ui/StatusBadge';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye } from 'lucide-react';
+import { ProductBatchesModal, Batch } from './ProductBatchesModal';
 
 interface Product {
   id: string;
@@ -27,6 +28,23 @@ export function ProductManagement() {
     { id: '4', name: 'Product D', description: 'Economy product', category: 'Electronics', unit: 'pcs', price: 19.99, status: 'inactive' },
   ]);
 
+  // Mock batches (sau này thay bằng API)
+  const batches: Batch[] = [
+    { batchCode: 'BATCH-001', productName: 'Product A', manufactureDate: '2024-01-15', expiryDate: '2025-01-15', currentQuantity: 450, status: 'normal' },
+    { batchCode: 'BATCH-002', productName: 'Product B', manufactureDate: '2024-02-10', expiryDate: '2025-02-10', currentQuantity: 25, status: 'low-stock' },
+    { batchCode: 'BATCH-003', productName: 'Product A', manufactureDate: '2024-05-08', expiryDate: '2025-05-08', currentQuantity: 15, status: 'low-stock' },
+    { batchCode: 'BATCH-003', productName: 'Product A', manufactureDate: '2024-05-08', expiryDate: '2025-05-08', currentQuantity: 15, status: 'low-stock' },
+    { batchCode: 'BATCH-003', productName: 'Product A', manufactureDate: '2024-05-08', expiryDate: '2025-05-08', currentQuantity: 15, status: 'low-stock' },
+    { batchCode: 'BATCH-003', productName: 'Product A', manufactureDate: '2024-05-08', expiryDate: '2025-05-08', currentQuantity: 15, status: 'low-stock' },
+    { batchCode: 'BATCH-003', productName: 'Product A', manufactureDate: '2024-05-08', expiryDate: '2025-05-08', currentQuantity: 15, status: 'low-stock' },
+    { batchCode: 'BATCH-003', productName: 'Product A', manufactureDate: '2024-05-08', expiryDate: '2025-05-08', currentQuantity: 15, status: 'low-stock' },
+  ];
+
+  // Modal batches (component riêng)
+  const [isBatchModalOpen, setIsBatchModalOpen] = useState(false);
+  const [selectedProductName, setSelectedProductName] = useState<string | undefined>(undefined);
+
+  // Modal add/edit product
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState({
@@ -78,8 +96,8 @@ export function ProductManagement() {
     }
 
     if (editingProduct) {
-      setProducts(products.map(p => 
-        p.id === editingProduct.id 
+      setProducts(products.map((p) =>
+        p.id === editingProduct.id
           ? { ...p, ...formData, price: Number(formData.price) }
           : p
       ));
@@ -99,8 +117,8 @@ export function ProductManagement() {
   };
 
   const handleToggleStatus = (id: string) => {
-    setProducts(products.map(p => 
-      p.id === id 
+    setProducts(products.map((p) =>
+      p.id === id
         ? { ...p, status: p.status === 'active' ? 'inactive' : 'active' }
         : p
     ));
@@ -111,8 +129,8 @@ export function ProductManagement() {
     { header: 'Description', accessor: 'description' },
     { header: 'Category', accessor: 'category' },
     { header: 'Unit', accessor: 'unit' },
-    { 
-      header: 'Price', 
+    {
+      header: 'Price',
       accessor: 'price',
       render: (value) => `$${value.toFixed(2)}`
     },
@@ -133,14 +151,29 @@ export function ProductManagement() {
           <button
             onClick={() => handleEdit(row)}
             className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+            title="Edit"
           >
             <Edit className="w-4 h-4" />
           </button>
+
           <button
             onClick={() => handleToggleStatus(value)}
             className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg"
+            title="Toggle status"
           >
             <Trash2 className="w-4 h-4" />
+          </button>
+
+          {/* See batches */}
+          <button
+            onClick={() => {
+              setSelectedProductName(row.name);
+              setIsBatchModalOpen(true);
+            }}
+            className="p-2 text-green-600 hover:bg-green-50 rounded-lg"
+            title="See batches"
+          >
+            <Eye className="w-4 h-4" />
           </button>
         </div>
       ),
@@ -164,6 +197,7 @@ export function ProductManagement() {
         <DataTable columns={columns} data={products} />
       </div>
 
+      {/* Add/Edit Product Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -214,6 +248,16 @@ export function ProductManagement() {
           </div>
         </div>
       </Modal>
+
+      {/* Product batches modal (component riêng) */}
+      <ProductBatchesModal
+        isOpen={isBatchModalOpen}
+        onClose={() => setIsBatchModalOpen(false)}
+        productName={selectedProductName}
+        batches={batches}
+        // Nếu Modal.tsx của bạn có hỗ trợ className thì giữ, không thì xoá dòng này
+        modalClassName="max-w-6xl w-[40vw]"
+      />
     </div>
   );
 }
